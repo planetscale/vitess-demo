@@ -8,30 +8,30 @@ provider "aws" {
 }
 
 resource "aws_db_parameter_group" "parameter-group-gtid-mode-ON" {
-   name = "parameter-group-gtid-on"
-   description = "Parameter Group to turn on GTID mode"
-   family = "mysql8.0"
-   parameter {
-     apply_method = "pending-reboot"
-     name = "gtid-mode"
-     value = "ON"
-   }
-   parameter {
-        apply_method = "pending-reboot"
-        name  = "enforce_gtid_consistency"
-        value = "ON"
-    }
+  name = "parameter-group-gtid-on"
+  description = "Parameter Group to turn on GTID mode"
+  family = "mysql8.0"
+  parameter {
+    apply_method = "pending-reboot"
+    name = "gtid-mode"
+    value = "ON"
+  }
+  parameter {
+    apply_method = "pending-reboot"
+    name  = "enforce_gtid_consistency"
+    value = "ON"
+  }
 
-    parameter {
-         apply_method = "pending-reboot"
-         name  = "binlog_format"
-         value = "ROW"
-     }
+  parameter {
+    apply_method = "pending-reboot"
+    name  = "binlog_format"
+    value = "ROW"
+  }
 
-     parameter {
-          name  = "max_connections"
-          value = "500"
-      }
+  parameter {
+    name  = "max_connections"
+    value = "500"
+  }
 }
 
 resource "aws_db_instance" "example" {
@@ -52,7 +52,6 @@ resource "aws_db_instance" "example" {
 
   backup_retention_period = 1
 
-  db_subnet_group_name = aws_db_subnet_group.rds.name 
   vpc_security_group_ids    = [aws_security_group.rds.id]
   apply_immediately = true
 }
@@ -85,17 +84,10 @@ resource "aws_security_group" "rds" {
   }
 }
 
-resource "aws_vpc" "rds" {
-  cidr_block = "10.0.0.0/16"
+data "aws_vpc" "default" {
+  default = true
 }
 
-resource "aws_subnet" "rds" {
-  vpc_id     = aws_vpc.rds.id
-  cidr_block = "10.0.0.0/16"
+data "aws_subnet_ids" "default" {
+  vpc_id = data.aws_vpc.default.id
 }
-
-resource "aws_db_subnet_group" "rds" {
-  name       = "rds"
-  subnet_ids = [aws_subnet.rds.id]
-}
-

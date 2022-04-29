@@ -22,5 +22,5 @@ variable "db_name" {
 variable "rds_security_group_name" {
   description = "The name of the security group for the RDS"
   type        = string
-  default     = "rds"
+  default     = "allow-access-from-everywhere11"
 }
