@@ -102,7 +102,7 @@ spec:
                   memory: 256Mi
             externalDatastore:
               user: msandbox
-              database: test
+              database: rails_app
               credentialsSecret:
                 name: demo-cluster-config
                 key: rds.json
