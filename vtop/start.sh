@@ -17,11 +17,19 @@
 source ./vtop/utils.sh
 
 cd vtop
+# call this file after specifying the following environment variables
+# RDS_DBNAME
+# RDS_HOST
+# RDS_PASSWORD
+# RDS_PORT
+# RDS_USER
 
 kind create cluster --wait 30s --name kind
 killall kubectl
 kubectl apply -f operator.yaml
 checkPodStatusWithTimeout "vitess-operator(.*)1/1(.*)Running(.*)"
+
+cat ./101_initial_cluster_config.yaml | sed "s,<RDS_USER>,$RDS_USER," | sed "s,<RDS_PASSWORD>,$RDS_PASSWORD," | sed "s,<RDS_DBNAME>,$RDS_DBNAME," | sed "s,<RDS_HOST>,$RDS_HOST," | sed "s,<RDS_PORT>,$RDS_PORT," > ./101_initial_cluster.yaml
 
 kubectl apply -f 101_initial_cluster.yaml
 checkPodStatusWithTimeout "demo-zone1-vtctld(.*)1/1(.*)Running(.*)"
