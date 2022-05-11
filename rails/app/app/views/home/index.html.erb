@@ -57,5 +57,16 @@ function insertUser() {
   })
 }
 
+function updateTotalUserCount(){
+  Rails.ajax({
+    type: "GET",
+    url: "/gettotalcount",
+    success: function(data) {
+      console.log(`Updated user count - ${data}`)
+    }
+  })
+}
+
 setInterval(insertUser, 1000);
+setInterval(updateTotalUserCount, 1000);
 </script>

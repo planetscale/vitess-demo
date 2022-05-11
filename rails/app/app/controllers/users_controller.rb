@@ -4,6 +4,11 @@ class UsersController < ApplicationController
   def index
   end
 
+  def gettotalcount
+    @userscount = User.count
+    render json: @userscount
+  end
+
   def show
     @user = User.find(params[:id])
   end
