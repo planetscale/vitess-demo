@@ -48,6 +48,12 @@ const latencyChart = new Chart(ctx, {
         scales: {
             y: {
                 beginAtZero: true
+            },
+            x: {
+              ticks: {
+                  autoSkip: true,
+                  maxTicksLimit: 60
+              }
             }
         },
         responsive: true
@@ -78,7 +84,7 @@ function insertUser() {
       var endTime = performance.now()
       totalLatency += endTime - startTime;
       countPoints += 1;
-      console.log(`totLatency - ${totalLatency} and countPOints = ${countPoints}`);
+      // console.log(`totLatency - ${totalLatency} and countPOints = ${countPoints}`);
     },
     error: function(data) {
       var endTime = performance.now()
