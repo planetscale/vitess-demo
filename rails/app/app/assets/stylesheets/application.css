@@ -13,3 +13,11 @@
  *= require_tree .
  *= require_self
  */
+
+ .masthead {
+  height: 17vh;
+  background-image: url('https://events.linuxfoundation.org/wp-content/uploads/2022/02/Kubecon_EU_2022_web-bg-scaled.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
