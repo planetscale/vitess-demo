@@ -9,6 +9,8 @@ terraform init
 terraform apply
 cd ..
 
+export RDS_PASSWORD="vitess_is_awesome"
+export RDS_DBNAME="rails_app"
 export RDS_HOST=`terraform output -raw address`
 export RDS_PORT=`terraform output -raw port`
 export RDS_USER="admin"
@@ -19,6 +21,11 @@ mysql -u $RDS_USER -p$RDS_PASSWORD -h$RDS_HOST -P$RDS_PORT
 # start rails app
 
 ./vtop/start.sh
+# rails page open
+# vtgate open
+# rds connection
+# vitess connection
+
 # rails config change
 # ./moveToVitess.sh
 
