@@ -20,10 +20,15 @@ mysql -u $RDS_USER -p$RDS_PASSWORD -h$RDS_HOST -P$RDS_PORT
 # call mysql.rds_set_configuration('binlog retention hours', 24)
 
 # start rails app
+# Vtop with gcp, etc
+# Move TAbles running vstream even when copy complete
+# Show progress from both vitess and rds
 # spring stop
+# watch -n 1 'mysql -u $RDS_USER -p$RDS_PASSWORD -h$RDS_HOST -P$RDS_PORT -D$RDS_DBNAME -e "select count(*) from users"'
 
 ./vtop/start.sh
 # start the move tables workflow
+# switchtraffic - show error count no increase
 
 # rails page open
 # vtgate open
