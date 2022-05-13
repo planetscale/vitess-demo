@@ -16,9 +16,11 @@ export RDS_PORT=`terraform output -raw port`
 export RDS_USER="admin"
 
 mysql -u $RDS_USER -p$RDS_PASSWORD -h$RDS_HOST -P$RDS_PORT
+# grant SYSTEM_VARIABLES_ADMIN on *.* to `admin`@`%`
 # call mysql.rds_set_configuration('binlog retention hours', 24)
 
 # start rails app
+# spring stop
 
 ./vtop/start.sh
 # rails page open
