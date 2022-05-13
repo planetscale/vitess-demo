@@ -23,6 +23,8 @@ mysql -u $RDS_USER -p$RDS_PASSWORD -h$RDS_HOST -P$RDS_PORT
 # spring stop
 
 ./vtop/start.sh
+# start the move tables workflow
+
 # rails page open
 # vtgate open
 # rds connection

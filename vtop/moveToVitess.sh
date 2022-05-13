@@ -15,9 +15,13 @@
 # limitations under the License.
 
 alias vtctlclient="vtctlclient --server=localhost:15999"
+alias mysql="mysql -h 127.0.0.1 -P 15306 -u user"
+
 vtctlclient MoveTables -- --source="rds" --all Create "vitess.railsApp"
 vtctlclient MoveTables -- Progress "vitess.railsApp"
 vtctlclient VDiff -- "vitess.railsApp"
 vtctlclient MoveTables -- SwitchTraffic "vitess.railsApp"
+vtctlclient GetRoutingRules rds
+# change rails to use Vitess
 vtctlclient MoveTables -- -keep_data Complete "vitess.railsApp"
 
