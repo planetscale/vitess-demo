@@ -1,2 +1,4 @@
-# vitess-demo
-Place to keep Vitess Demo used in Conference or otherwise 
+# Kubecon NA 2022 VTOrc Demo
+
+Prerequisite
+- Vitess Binaries from v15.
