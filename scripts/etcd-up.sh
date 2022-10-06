@@ -18,7 +18,6 @@
 
 source ./env.sh
 
-cell=${CELL:-'test'}
 export ETCDCTL_API=2
 
 # Check that etcd is not already running
@@ -32,19 +31,21 @@ sleep 5
 echo "add /vitess/global"
 etcdctl --endpoints "http://${ETCD_SERVER}" mkdir /vitess/global &
 
-echo "add /vitess/$cell"
-etcdctl --endpoints "http://${ETCD_SERVER}" mkdir /vitess/$cell &
+for cell in "zone1" "zone2"; do
+  echo "add /vitess/$cell"
+  etcdctl --endpoints "http://${ETCD_SERVER}" mkdir /vitess/$cell &
 
-# And also add the CellInfo description for the cell.
-# If the node already exists, it's fine, means we used existing data.
-echo "add $cell CellInfo"
-set +e
-# shellcheck disable=SC2086
-vtctl $TOPOLOGY_FLAGS VtctldCommand AddCellInfo \
-  --root /vitess/$cell \
-  --server-address "${ETCD_SERVER}" \
-  $cell
-set -e
+  # And also add the CellInfo description for the cell.
+  # If the node already exists, it's fine, means we used existing data.
+  echo "add $cell CellInfo"
+  set +e
+  # shellcheck disable=SC2086
+  vtctl $TOPOLOGY_FLAGS VtctldCommand AddCellInfo \
+    --root /vitess/$cell \
+    --server-address "${ETCD_SERVER}" \
+    $cell
+  set -e
+done
 
 echo "etcd start done..."
 

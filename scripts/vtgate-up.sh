@@ -18,7 +18,6 @@
 
 source ./env.sh
 
-cell=${CELL:-'test'}
 web_port=15001
 grpc_port=15991
 mysql_server_port=15306
@@ -34,8 +33,8 @@ vtgate \
   --grpc_port $grpc_port \
   --mysql_server_port $mysql_server_port \
   --mysql_server_socket_path $mysql_server_socket_path \
-  --cell $cell \
-  --cells_to_watch $cell \
+  --cell "zone1" \
+  --cells_to_watch "zone1,zone2" \
   --tablet_types_to_wait PRIMARY,REPLICA \
   --service_map 'grpc-vtgateservice' \
   --pid_file $VTDATAROOT/tmp/vtgate.pid \

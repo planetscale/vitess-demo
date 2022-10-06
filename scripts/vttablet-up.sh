@@ -29,9 +29,6 @@ tablet_hostname=''
 printf -v tablet_logfile 'vttablet_%010d_querylog.txt' $uid
 
 tablet_type=replica
-if [[ "${uid: -1}" -gt 1 ]]; then
- tablet_type=rdonly
-fi
 
 echo "Starting vttablet for $alias..."
 

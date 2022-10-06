@@ -20,29 +20,35 @@
 source ./env.sh
 
 # start topo server
-CELL=zone1 ./scripts/etcd-up.sh
+./scripts/etcd-up.sh
 
 # start vtctld
 CELL=zone1 ./scripts/vtctld-up.sh
 
-# start vttablets for keyspace commerce
-for i in 100 101 102; do
+# start vttablets in zone1 for keyspace commerce
+for i in 100 101; do
 	CELL=zone1 TABLET_UID=$i ./scripts/mysqlctl-up.sh
 	CELL=zone1 KEYSPACE=commerce TABLET_UID=$i ./scripts/vttablet-up.sh
 done
 
+# start vttablets in zone2 for keyspace commerce
+for i in 200 201; do
+	CELL=zone2 TABLET_UID=$i ./scripts/mysqlctl-up.sh
+	CELL=zone2 KEYSPACE=commerce TABLET_UID=$i ./scripts/vttablet-up.sh
+done
+
 # set the correct durability policy for the keyspace
-vtctldclient --server localhost:15999 SetKeyspaceDurabilityPolicy --durability-policy=semi_sync commerce
+vtctldclient --server localhost:15999 SetKeyspaceDurabilityPolicy --durability-policy=cross_cell commerce
 
 # start vtorc
 ./scripts/vtorc-up.sh
 
 # Wait for all the tablets to be up and registered in the topology server
 for _ in $(seq 0 200); do
-	vtctldclient GetTablets --keyspace commerce --shard 0 | wc -l | grep -q "3" && break
+	vtctldclient GetTablets --keyspace commerce --shard 0 | wc -l | grep -q "4" && break
 	sleep 1
 done;
-vtctldclient GetTablets --keyspace commerce --shard 0 | wc -l | grep -q "3" || (echo "Timed out waiting for tablets to be up in commerce/0" && exit 1)
+vtctldclient GetTablets --keyspace commerce --shard 0 | wc -l | grep -q "4" || (echo "Timed out waiting for tablets to be up in commerce/0" && exit 1)
 
 # Wait for a primary tablet to be elected in the shard
 for _ in $(seq 0 200); do
@@ -58,7 +64,7 @@ vtctldclient ApplySchema --sql-file create_commerce_schema.sql commerce
 vtctldclient ApplyVSchema --vschema-file vschema_commerce_initial.json commerce
 
 # start vtgate
-CELL=zone1 ./scripts/vtgate-up.sh
+./scripts/vtgate-up.sh
 
 # start vtadmin
 ./scripts/vtadmin-up.sh
