@@ -17,8 +17,7 @@ vtadmin \
   --http-tracing \
   --logtostderr \
   --alsologtostderr \
-  --rbac \
-  --rbac-config="./vtadmin/rbac.yaml" \
+  --no-rbac \
   --cluster "id=local,name=local,discovery=staticfile,discovery-staticfile-path=./vtadmin/discovery.json,tablet-fqdn-tmpl={{ .Tablet.Hostname }}:15{{ .Tablet.Alias.Uid }}" \
   > "${log_dir}/vtadmin-api.out" 2>&1 &
 

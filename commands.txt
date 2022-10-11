@@ -1,0 +1,22 @@
+# Bring up the initial cluster. We have 4 tablets, 2 in each cell
+1. ./101_initial_cluster.sh
+
+# We'll start by looking at some of the easier failures to fix and then we'll go to more complex ones like the primary being down, etc.
+2. Stop Replication from VTAdmin
+3. Show Repair
+4. Stop global recoveries for VTOrc
+# http://localhost:16000/api/disable-global-recoveries
+5. Set Read Only from VTAdmin
+6. Show the problems in VTOrc
+7. Enable global recoveries for VTOrc
+# http://localhost:16000/api/enable-global-recoveries
+8. Show repair
+
+# Take the primary mysql down and show that VTOrc repairs.
+9. shutdown primary's mysql
+TABLET_UID=$uid ./scripts/mysqlctl-down.sh
+10. Show that VTOrc repairs and promotes a different primary
+11. If the primary is in the same cell as the previous primary, reparent to one in a different cell
+12. Shutdown the new primary too.
+13. This time VTOrc can't repair it.
+14. Delete the failed replica to show that VTOrc then repairs it.
