@@ -31,17 +31,15 @@ for i in 100 101 102 103; do
 	CELL=zone1 KEYSPACE=semi_sync_ks TABLET_UID=$i ./scripts/vttablet-up.sh
 done
 
-# start vttablets in zone1 for keyspace cross_cell_ks
-for i in 300 301; do
-	CELL=zone1 TABLET_UID=$i ./scripts/mysqlctl-up.sh
-	CELL=zone1 KEYSPACE=cross_cell_ks TABLET_UID=$i ./scripts/vttablet-up.sh
-done
-
 # start vttablets in zone2 for keyspace cross_cell_ks
-for i in 200 201; do
+for i in 200 201 202; do
 	CELL=zone2 TABLET_UID=$i ./scripts/mysqlctl-up.sh
 	CELL=zone2 KEYSPACE=cross_cell_ks TABLET_UID=$i ./scripts/vttablet-up.sh
 done
+
+# start vttablet in zone1 for keyspace cross_cell_ks
+CELL=zone1 TABLET_UID=300 ./scripts/mysqlctl-up.sh
+CELL=zone1 KEYSPACE=cross_cell_ks TABLET_UID=300 ./scripts/vttablet-up.sh
 
 # set the correct durability policy for the keyspaces
 vtctldclient --server localhost:15999 SetKeyspaceDurabilityPolicy --durability-policy=cross_cell cross_cell_ks
@@ -62,7 +60,6 @@ for _ in $(seq 0 200); do
 done;
 vtctldclient GetTablets --keyspace semi_sync_ks --shard 0 | wc -l | grep -q "4" || (echo "Timed out waiting for tablets to be up in semi_sync_ks/0" && exit 1)
 
-
 # Wait for a primary tablet to be elected in the shard
 for _ in $(seq 0 200); do
 	vtctldclient GetTablets --keyspace cross_cell_ks --shard 0 | grep -q "primary" && break
@@ -74,7 +71,6 @@ for _ in $(seq 0 200); do
 	sleep 1
 done;
 vtctldclient GetTablets --keyspace semi_sync_ks --shard 0 | grep "primary" || (echo "Timed out waiting for primary to be elected in semi_sync_ks/0" && exit 1)
-
 
 # create the schema
 vtctldclient ApplySchema --sql-file create_commerce_schema.sql cross_cell_ks

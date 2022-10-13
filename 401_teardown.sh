@@ -32,7 +32,7 @@ for uid in 100 101 102 103 300 301; do
   CELL=zone1 TABLET_UID=$uid ./scripts/mysqlctl-down.sh
 done
 
-for uid in 200 201; do
+for uid in 200 201 202; do
   printf -v alias '%s-%010d' 'zone2' $uid
   echo "Shutting down tablet $alias"
   CELL=zone2 TABLET_UID=$uid ./scripts/vttablet-down.sh
