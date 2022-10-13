@@ -1,7 +1,5 @@
 {
     "tables": {
-        "product": {},
-        "customer": {},
-        "corder": {}
+        "t1": {}
     }
 }

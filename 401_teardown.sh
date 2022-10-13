@@ -25,7 +25,7 @@ source ./env.sh
 
 ./scripts/vtgate-down.sh
 
-for uid in 100 101; do
+for uid in 100 101 102 103 300 301; do
   printf -v alias '%s-%010d' 'zone2' $uid
   echo "Shutting down tablet $alias"
   CELL=zone1 TABLET_UID=$uid ./scripts/vttablet-down.sh
