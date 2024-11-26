@@ -1,0 +1,9 @@
+# Bring up the initial cluster. We have 1 sharded keyspace with 2 shards and an unsharded keyspace.
+1. ./101_initial_cluster.sh
+
+# Show the keyspace and the tablets on vtadmin.
+
+# Show the tables in the commerce keyspace.
+
+
+

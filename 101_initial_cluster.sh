@@ -35,10 +35,11 @@ CELL=zone1 ./scripts/etcd-up.sh
 CELL=zone1 ./scripts/vtctld-up.sh
 
 vtctldclient CreateKeyspace --sidecar-db-name="${SIDECAR_DB_NAME}" --durability-policy=semi_sync commerce || fail "Failed to create and configure the commerce keyspace"
+vtctldclient CreateKeyspace --sidecar-db-name="${SIDECAR_DB_NAME}" --durability-policy=semi_sync unsharded || fail "Failed to create and configure the unsharded keyspace"
 
 # start mysqlctls for keyspace commerce
 # because MySQL takes time to start, we do this in parallel
-for i in 100 101 102 200 201 202; do
+for i in 100 101 102 200 201 202 300 301 302; do
 	CELL=zone1 TABLET_UID=$i ./scripts/mysqlctl-up.sh &
 done
 
@@ -48,13 +49,17 @@ echo "Waiting for mysqlctls to start..."
 wait
 echo "mysqlctls are running!"
 
-# start vttablets for keyspace commerce
+# start vttablets for keyspaces
 for i in 100 101 102; do
-	SHARD=-80 CELL=zone1 KEYSPACE=commerce TABLET_UID=$i ./scripts/vttablet-up.sh
+	CELL=zone1 KEYSPACE=unsharded TABLET_UID=$i ./scripts/vttablet-up.sh
 done
 
 for i in 200 201 202; do
 	SHARD=80- CELL=zone1 KEYSPACE=commerce TABLET_UID=$i ./scripts/vttablet-up.sh
+done
+
+for i in 300 301 302; do
+	SHARD=-80 CELL=zone1 KEYSPACE=commerce TABLET_UID=$i ./scripts/vttablet-up.sh
 done
 
 # start vtorc
@@ -64,6 +69,15 @@ done
 # and for a primary tablet to be elected in the shard and become healthy/serving.
 wait_for_healthy_shard commerce 80- || exit 1
 wait_for_healthy_shard commerce -80 || exit 1
+wait_for_healthy_shard unsharded 0 || exit 1
+
+# create the schema
+vtctldclient ApplySchema --sql-file create_commerce_schema.sql commerce
+vtctldclient ApplySchema --sql-file create_unsharded_schema.sql unsharded
+
+# create the vschema
+vtctldclient ApplyVSchema --vschema-file vschema_unsharded.json unsharded
+vtctldclient ApplyVSchema --vschema-file vschema_commerce.json commerce
 
 # start vtgate
 CELL=zone1 ./scripts/vtgate-up.sh
