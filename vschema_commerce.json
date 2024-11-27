@@ -1,8 +1,8 @@
 {
     "sharded": true,
     "vindexes": {
-        "xxhash": {
-            "type": "xxhash"
+        "reverse_bits": {
+            "type": "reverse_bits"
         }
     },
     "tables": {
@@ -10,7 +10,7 @@
             "column_vindexes": [
                 {
                     "column": "customer_id",
-                    "name": "xxhash"
+                    "name": "reverse_bits"
                 }
             ],
             "auto_increment": {
@@ -22,7 +22,7 @@
             "column_vindexes": [
                 {
                     "column": "customer_id",
-                    "name": "xxhash"
+                    "name": "reverse_bits"
                 }
             ],
             "auto_increment": {
