@@ -39,8 +39,8 @@ use commerce;
 # Look at some queries and how Vitess plans them.
 vexplain select * from customer;
 vexplain select * from customer where customer_id = 1;
-vexplain select * from corder where order_id = 1;
 vexplain select * from corder where customer_id = 1;
+vexplain select * from corder where order_id = 1;
 vexplain select * from corder join customer;
 vexplain select * from corder join customer on corder.customer_id = customer.customer_id;
 
