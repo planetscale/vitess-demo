@@ -45,6 +45,9 @@ vexplain select * from corder join customer;
 vexplain select * from corder join customer on corder.customer_id = customer.customer_id;
 
 # Talk about secondary vindexes if time permits
+vtctldclient --server localhost:15999 LookupVindex --name corder_lookup_vdx --table-keyspace commerce create --keyspace commerce --type consistent_lookup_unique --table-owner corder --table-owner-columns order_id --table-name corder_lookup_tbl --table-vindex-type unicode_loose_xxhash
+
+vtctldclient --server localhost:15999 LookupVindex --name corder_lookup_vdx --table-keyspace commerce externalize
 
 # Brind down the cluster
 ./401_teardown.sh
